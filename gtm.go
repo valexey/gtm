@@ -98,7 +98,7 @@ func (this *Op) ParseLogEntry(entry OpLogEntry) {
 		if this.IsUpdate() {
 			objectField = entry["o2"].(OpLogEntry)
 			query := entry["o"].(OpLogEntry)
-			this.Changes = query["$set"].(map[string]interface{})
+			this.Changes = query["$set"].(OpLogEntry)
 		} else {
 			objectField = entry["o"].(OpLogEntry)
 		}
