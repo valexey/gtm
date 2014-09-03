@@ -95,15 +95,23 @@ func (this *Op) ParseLogEntry(entry OpLogEntry) {
 	// only parse inserts, deletes, and updates
 	if this.IsInsert() || this.IsDelete() || this.IsUpdate() {
 		var objectField OpLogEntry
+		parsed := true
 		if this.IsUpdate() {
 			objectField = entry["o2"].(OpLogEntry)
 			query := entry["o"].(OpLogEntry)
 			this.Changes = query["$set"].(OpLogEntry)
 		} else {
-			objectField = entry["o"].(OpLogEntry)
+			of := entry["o"]
+			if of != nil {
+				objectField = entry["o"].(OpLogEntry)
+			} else {
+				parsed = false
+			}
 		}
-		this.Id = objectField["_id"]
-		this.Namespace = entry["ns"].(string)
+		if parsed {
+			this.Id = objectField["_id"]
+			this.Namespace = entry["ns"].(string)
+		}
 	}
 }
 
